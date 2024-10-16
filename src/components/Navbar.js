@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Drawer,
   List,
@@ -36,7 +36,7 @@ const drawerWidth = 240;
 function Navbar() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(true); // Assume user is logged in initially
+  const [loggedIn, setLoggedIn] = useState(false); // Assume user is not logged in initially
   const [logoutOpen, setLogoutOpen] = useState(false); // State for logout confirmation dialog
   const [formValues, setFormValues] = useState({
     name: '',
@@ -51,6 +51,44 @@ function Navbar() {
     },
     image: null,
   });
+
+  const navigate = useNavigate(); // For navigation after logout
+
+  // Check authentication state on component mount
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setLoggedIn(!!user); // Set loggedIn state based on user presence
+    });
+
+    return () => unsubscribe(); // Cleanup subscription on unmount
+  }, []);
+
+  // Handle click to open logout confirmation dialog
+  const handleLogoutClick = () => {
+    if (loggedIn) {
+      setLogoutOpen(true);
+    } else {
+      navigate('/'); // Navigate to landing page if logged out
+    }
+  };
+
+  // Handle close of logout confirmation dialog
+  const handleLogoutClose = () => {
+    setLogoutOpen(false);
+  };
+
+  // Handle confirmation of logout
+  const handleLogoutConfirm = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      console.log("User logged out successfully.");
+      setLoggedIn(false); // Update state to reflect user is logged out
+      navigate('/'); // Redirect to home or login page
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+    setLogoutOpen(false); // Close confirmation dialog after logout
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -105,28 +143,6 @@ function Navbar() {
     }, 2000);
   };
 
-  // Handle click to open logout confirmation dialog
-  const handleLogoutClick = () => {
-    setLogoutOpen(true);
-  };
-
-  // Handle close of logout confirmation dialog
-  const handleLogoutClose = () => {
-    setLogoutOpen(false);
-  };
-
-  // Handle confirmation of logout
-  const handleLogoutConfirm = async () => {
-    try {
-      await signOut(auth); // Sign out the user
-      console.log("User logged out successfully.");
-      setLoggedIn(false); // Update state to reflect user is logged out
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-    setLogoutOpen(false); // Close confirmation dialog after logout
-  };
-
   return (
     <Box sx={{ display: 'flex' }}>
       <Drawer
@@ -147,66 +163,66 @@ function Navbar() {
             Steady Hotel
           </Typography>
         </Box>
-        
+
         <List>
-          <ListItem button component={Link} to="/dashboard" sx={{ 
+          <ListItem button component={Link} to="/dashboard" sx={{
             color: 'white',
             pointerEvents: loggedIn ? 'auto' : 'none', // Disable if logged out
             '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            }
+            },
           }}>
             <ListItemIcon>
               <DashboardIcon sx={{ color: 'white' }} />
             </ListItemIcon>
             <ListItemText primary="Dashboard" primaryTypographyProps={{ style: { color: 'white' } }} />
           </ListItem>
-          
-          <ListItem button component={Link} to="/accommodation" sx={{ 
+
+          <ListItem button component={Link} to="/accommodation" sx={{
             color: 'white',
             pointerEvents: loggedIn ? 'auto' : 'none', // Disable if logged out
             '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            }
+            },
           }}>
             <ListItemIcon>
               <AccommodationIcon sx={{ color: 'white' }} />
             </ListItemIcon>
             <ListItemText primary="Accommodation" primaryTypographyProps={{ style: { color: 'white' } }} />
           </ListItem>
-          
-          <ListItem button component={Link} to="/users" sx={{ 
+
+          <ListItem button component={Link} to="/users" sx={{
             color: 'white',
             pointerEvents: loggedIn ? 'auto' : 'none', // Disable if logged out
             '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            }
+            },
           }}>
             <ListItemIcon>
               <UsersIcon sx={{ color: 'white' }} />
             </ListItemIcon>
             <ListItemText primary="Users" primaryTypographyProps={{ style: { color: 'white' } }} />
           </ListItem>
-          
-          <ListItem button component={Link} to="/gallery" sx={{ 
+
+          <ListItem button component={Link} to="/gallery" sx={{
             color: 'white',
             pointerEvents: loggedIn ? 'auto' : 'none', // Disable if logged out
             '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            }
+            },
           }}>
             <ListItemIcon>
               <GalleryIcon sx={{ color: 'white' }} />
             </ListItemIcon>
             <ListItemText primary="Gallery" primaryTypographyProps={{ style: { color: 'white' } }} />
           </ListItem>
-          
-          <ListItem button component={Link} to="/profile" sx={{ 
+
+          <ListItem button component={Link} to="/profile" sx={{
             color: 'white',
             pointerEvents: loggedIn ? 'auto' : 'none', // Disable if logged out
             '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            }
+            },
           }}>
             <ListItemIcon>
               <ProfileIcon sx={{ color: 'white' }} />
@@ -226,7 +242,7 @@ function Navbar() {
           >
             Create Accommodation
           </Button>
-          
+
           <Button
             variant="contained"
             startIcon={<BookingIcon />}
@@ -236,10 +252,10 @@ function Navbar() {
           >
             New Booking
           </Button>
-          
+
           <Button
             variant="outlined"
-            startIcon={<LogoutIcon />}
+            startIcon={loggedIn ? <LogoutIcon /> : null}
             onClick={handleLogoutClick} // Use the logout click handler
             fullWidth
             sx={{ color: 'white', borderColor: 'white', '&:hover': {
@@ -247,15 +263,10 @@ function Navbar() {
               backgroundColor: 'rgba(255, 255, 255, 0.08)',
             } }}
           >
-            Logout
+            {loggedIn ? 'Logout' : 'Login'} {/* Change button text based on logged in state */}
           </Button>
         </Box>
       </Drawer>
-
-      {/* Main content */}
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        {/* Your main content goes here */}
-      </Box>
 
       {/* Popup Form Dialog */}
       <Dialog open={open} onClose={handleClose}>
@@ -344,7 +355,7 @@ function Navbar() {
                 label="Breakfast"
               />
             </Box>
-            
+
             <Box sx={{ mt: 2 }}>
               <Button
                 variant="contained"
