@@ -28,8 +28,8 @@ import {
   BedOutlined as AccommodationIcon,
   BookOnline as BookingIcon,
 } from '@mui/icons-material';
-import { signOut } from "firebase/auth"; // Import signOut from Firebase auth
-import { auth } from '../service/firebase'; // Import your Firebase auth instance
+import { signOut } from "firebase/auth"; // signOut from Firebase auth
+import { auth } from '../service/firebase'; // Firebase auth instance
 
 const drawerWidth = 240;
 
