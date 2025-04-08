@@ -41,6 +41,9 @@ Sibusiso Khozaem
 1. Clone the repository
 ```bash
 git clone https://github.com/SbuKhoza/hotelv5
+
+Hosted link: https://hotelv5.vercel.app/
+
 cd hotelv5
 ```
 
