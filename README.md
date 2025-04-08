@@ -1,4 +1,4 @@
-# Steady Hotel Management System
+# Steady Hotel Admin Management System
 
 ## Overview
 Steady Hotel Management System is a comprehensive web application designed for hotel administrators to efficiently manage accommodations, bookings, users, and gain insights through a detailed dashboard. Built with React and Firebase, this system provides a user-friendly interface to handle various aspects of hotel management.
@@ -40,7 +40,7 @@ Sibusiso Khozaem
 ## Installation
 1. Clone the repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/SbuKhoza/hotelv5
 cd hotelv5
 ```
 
