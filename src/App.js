@@ -5,7 +5,7 @@ import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
 import Accommodation from './pages/Accommodation';
-
+import Bookings from './pages/Bookings'; // Import the new Bookings component
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="users" element={<Users />} />
         <Route path="accommodation" element={<Accommodation />} />
+        <Route path="bookings" element={<Bookings />} /> {/* Add the new route */}
       </Routes>
     </Router>
   )

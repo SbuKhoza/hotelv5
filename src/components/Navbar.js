@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Add this at the top
 import { storage } from '../service/firebase'; // Add this to import storage
+
 import {
   Drawer,
   List,
@@ -277,6 +278,19 @@ function Navbar() {
             </ListItemIcon>
             <ListItemText primary="Accommodation" primaryTypographyProps={{ style: { color: 'white' } }} />
           </ListItem>
+
+          <ListItem button component={Link} to="/bookings" sx={{
+  color: 'white',
+  pointerEvents: loggedIn ? 'auto' : 'none',
+  '&:hover': {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  },
+}}>
+  <ListItemIcon>
+    <BookingIcon sx={{ color: 'white' }} />
+  </ListItemIcon>
+  <ListItemText primary="Bookings" primaryTypographyProps={{ style: { color: 'white' } }} />
+</ListItem>
 
           <ListItem button component={Link} to="/users" sx={{
             color: 'white',
